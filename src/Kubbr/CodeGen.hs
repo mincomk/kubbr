@@ -24,4 +24,6 @@ parseLanguage s =
     case map toLower s of
         "nu" -> Right nushellCodeGen
         "nushell" -> Right nushellCodeGen
+        "bash" -> Right bashCodeGen
+        "fish" -> Right fishCodeGen
         _ -> Left $ "Invalid language:" ++ s

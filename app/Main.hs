@@ -13,4 +13,6 @@ main = do
         Right cfg -> do
             let aliasSet = generateAliasSet cfg
             let code = outputCodeGen opts aliasSet
-            putStrLn code
+            case outputFile opts of
+                "-" -> putStrLn code
+                f -> writeFile f code

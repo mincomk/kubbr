@@ -25,7 +25,7 @@ instance FromJSON AbbrConfig where
                 ( \o -> do
                     cmd <- o .: "command"
                     shortVal <- o .: "short"
-                    return (cmd, shortVal)
+                    return (shortVal, cmd)
                 )
                 baseObj
         actionsObj <- v .: "actions"

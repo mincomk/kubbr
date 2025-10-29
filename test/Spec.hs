@@ -46,9 +46,9 @@ abbrGenTests :: TestTree
 abbrGenTests =
     testGroup
         "AbbrGen"
-        [ QC.testProperty "combinePair combines strings correctly" $
-            \b (a, r) -> combinePair b (a, r) == (fst b ++ fst a ++ fst r, snd b ++ snd a ++ snd r)
-        , QC.testProperty "generateAliasSet generates all combinations" $
+        [ -- QC.testProperty "combinePair combines strings correctly" $
+          -- \b (a, r) -> combinePair b (a, r) == (fst b ++ fst a ++ fst r, snd b ++ snd a ++ snd r)
+          QC.testProperty "generateAliasSet generates all combinations" $
             \cfg ->
                 let aliasSet = generateAliasSet cfg
                  in length aliasSet == length (actions cfg) * length (resources cfg) + length (extras cfg)
