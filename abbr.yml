@@ -1,0 +1,31 @@
+base:
+  command: kubectl
+  short: k
+actions:
+  g: get
+  e: edit
+  d: describe
+  del: delete
+  cfg: config
+resources:
+  ns: namespace
+  p: pods
+  s: secrets
+  d: deployment
+  rs: replicaset
+  ss: statefulset
+  ds: daemonset
+  cm: configmap
+  cj: cronjob
+  j: job
+  svc: service
+  n: node
+  r: roles
+  rb: rolebindings
+  cr: clusterroles
+  sa: serviceaccount
+  np: networkpolicy
+extras:
+  l: logs
+  exec: exec -it
+  pf: port-forward
