@@ -51,7 +51,19 @@ abbrGenTests =
           QC.testProperty "generateAliasSet generates all combinations" $
             \cfg ->
                 let aliasSet = generateAliasSet cfg
-                 in length aliasSet == length (actions cfg) * length (resources cfg) + length (extras cfg)
+
+                    -- kgp: kubectl get po
+                    resourcesLength = length (actions cfg) * length (resources cfg)
+
+                    -- kg: kubectl get
+                    actionsNoResourcesLength = length (actions cfg)
+
+                    -- custom like kpf: kubectl port-forward
+                    extrasLength = length (extras cfg)
+
+                    -- k: kubectl
+                    baseLength = 1
+                 in length aliasSet == resourcesLength + extrasLength + actionsNoResourcesLength + baseLength
         ]
 
 codeGenTests :: TestTree

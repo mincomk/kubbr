@@ -8,8 +8,23 @@ combinePair b ((actionShort, actionLong), (resShort, resLong)) = (shortVal, long
     shortVal = fst b ++ actionShort ++ resShort
     longVal = unwords [snd b, actionLong, resLong]
 
-generateAliasSet :: AbbrConfig -> AliasSet
-generateAliasSet cfg = resourcePairs ++ extraPairs (base cfg) (extras cfg)
+combinePairNoResource :: StringPair -> StringPair -> StringPair
+combinePairNoResource b (actionShort, actionLong) = (shortVal, longVal)
   where
-    extraPairs (baseShort, baseLong) pairs = [(baseShort ++ shortExtra, baseLong ++ " " ++ longExtra) | (shortExtra, longExtra) <- pairs]
+    shortVal = fst b ++ actionShort
+    longVal = unwords [snd b, actionLong]
+
+generateAliasSet :: AbbrConfig -> AliasSet
+generateAliasSet cfg = resourcePairs ++ extraPairs (base cfg) (extras cfg) ++ noResourcePairs ++ basePairs
+  where
+    -- kgp: kubectl get po
     resourcePairs = combinePair (base cfg) <$> [(a, r) | a <- actions cfg, r <- resources cfg]
+
+    -- kg: kubectl get
+    noResourcePairs = combinePairNoResource (base cfg) <$> actions cfg
+
+    -- basePair
+    basePairs = [base cfg]
+
+    -- e.g. kpf: kubectl port-forward
+    extraPairs (baseShort, baseLong) pairs = [(baseShort ++ shortExtra, baseLong ++ " " ++ longExtra) | (shortExtra, longExtra) <- pairs]
