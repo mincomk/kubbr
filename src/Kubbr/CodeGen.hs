@@ -19,6 +19,11 @@ nushellCodeGen alias = unlines $ genLine <$> alias
   where
     genLine (shortVal, longVal) = "alias " ++ shortVal ++ " = " ++ longVal
 
+powerShellCodeGen :: CodeGen
+powerShellCodeGen alias = unlines $ genLine <$> alias
+  where
+    genLine (shortVal, longVal) = "Set-Alias -Name " ++ shortVal ++ " -Value \"" ++ longVal ++ "\""
+
 parseLanguage :: String -> Either String CodeGen
 parseLanguage s =
     case map toLower s of
@@ -26,4 +31,5 @@ parseLanguage s =
         "nushell" -> Right nushellCodeGen
         "bash" -> Right bashCodeGen
         "fish" -> Right fishCodeGen
+        "powershell" -> Right powerShellCodeGen
         _ -> Left $ "Invalid language:" ++ s
