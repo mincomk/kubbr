@@ -22,7 +22,7 @@ nushellCodeGen alias = unlines $ genLine <$> alias
 powerShellCodeGen :: CodeGen
 powerShellCodeGen alias = unlines $ genLine <$> alias
   where
-    genLine (shortVal, longVal) = "Set-Alias -Name " ++ shortVal ++ " -Value \"" ++ longVal ++ "\""
+    genLine (shortVal, longVal) = "function " ++ shortVal ++ " { " ++ longVal ++ " $args }"
 
 parseLanguage :: String -> Either String CodeGen
 parseLanguage s =
