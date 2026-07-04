@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version (e.g. 1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine release tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+            VERSION="${VERSION#v}"
+            echo "tag_name=v${VERSION}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag_name=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Haskell
+        uses: haskell-actions/setup@v2
+        with:
+          ghc-version: "9.8.4"
+          cabal-version: "3.14.2.0"
+
+      - name: Generate .cabal
+        run: hpack
+
+      - name: Build kubbr
+        run: cabal build
+
+      - name: Generate shortcuts for all targets
+        run: |
+          BIN=$(cabal list-bin kubbr)
+          "$BIN" abbr.yml --language bash       --output kube.sh
+          "$BIN" abbr.yml --language fish       --output kube.fish
+          "$BIN" abbr.yml --language powershell --output kube.ps1
+          "$BIN" abbr.yml --language nushell    --output kube.nu
+
+      - name: Create GitHub release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          files: |
+            kube.sh
+            kube.fish
+            kube.ps1
+            kube.nu
